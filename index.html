@@ -33,18 +33,15 @@
         算法版本：<select>
           <option>版本 α ( 20111222 )</option>
         </select></fieldset><p></p>
-        <fieldset><legend>动作</legend>
+      <fieldset><legend>动作</legend>
         <input type="button" id="generate" value="生成啦啦啦">
-	<input type="button" onclick="second()" value="二次生成">
-        <input type="reset" id="reset" value="清空内容">
-
-         
-         
+        <input type="button" onclick="second()" value="二次生成">
+        <input type="reset" id="reset" value="清空内容" onclick="getElementById('times').innerHTML = 1">
         </fieldset><p></p>
       <fieldset id="information" style="display:block"><legend>啦啦啦生成区域</legend>
         <p><b>主啦啦啦</b> </p></fieldset>
       <fieldset id="result" style="display:none"><legend>生成结果</legend>
-        恭喜，您生成的啦啦啦是 <br><b onclick="copyText()" id="passwd" style="padding: 5px 10px; background-color: #eee; border: 1px dotted #bbb; color: #0a0; font-family: Courier;"></b> <br>请牢记您的主啦啦啦和辨别啦啦。</fieldset>
+        恭喜，您第<b id="times"  style="color:rgb(245, 7, 7);" >1</b>次生成的啦啦啦是 <br><b onclick="copyText(getElementById('passwd').innerText)" id="passwd" style="padding: 5px 10px; background-color: #eee; border: 1px dotted #bbb; color: #0a0; font-family: Courier;"></b> <br>请牢记您的主啦啦啦和辨别啦啦。</fieldset>
       <fieldset id="error" style="display:none"><legend>错误信息</legend>
         在执行过程中发生了如下错误：<b id="message" style="color:#933;"></b>，请修正后再试。</fieldset>
     </form></div>
@@ -52,9 +49,65 @@
         function second(){
             document.getElementById("primary").value  = document.getElementById("passwd").innerText.toString();
             document.getElementById('generate').click();
+            var a = parseFloat( document.getElementById("times").innerText);
+                 a=a+1;
+                
+            document.getElementById("times").innerText=a
+
+
        };
-      </script>
+    </script>
+    <script type="text/javascript">
+        function copyText(whattocopy){
+          //window.myip=document.getElementById("passwd").innerText;   
+        // 数字没有 .length 不能执行selectText 需要转化成字符串
+       const textString = whattocopy.toString();
+      // const textString = document.getElementById("passwd").innerText.toString();
+        let input = document.querySelector('#copy-input');
+        if (!input) {
+          input = document.createElement('input');
+          input.id = "copy-input";
+          input.readOnly = "readOnly";        // 防止ios聚焦触发键盘事件
+          input.style.position = "absolute";
+          input.style.left = "-1000px";
+          input.style.zIndex = "-1000";
+          document.body.appendChild(input)
+        }
+        input.value = textString;
+        // ios必须先选中文字且不支持 input.select();
+        selectText(input, 0, textString.length);
+        if (document.execCommand('copy')) {
+          document.execCommand('copy');
+          swal({
   
+           title: "复制成功!",
+  
+           //text: "窗口将在1秒后关闭",
+  
+           timer: 800
+  
+            });
+         // alert('已复制到粘贴板');
+        }else {
+          console.log('不兼容');
+        }
+        input.blur();
+        // input自带的select()方法在苹果端无法进行选择，所以需要自己去写一个类似的方法
+        // 选择文本。createTextRange(setSelectionRange)是input方法
+        function selectText(textbox, startIndex, stopIndex) {
+          if (textbox.createTextRange) {//ie
+            const range = textbox.createTextRange();
+            range.collapse(true);
+            range.moveStart('character', startIndex);//起始光标
+            range.moveEnd('character', stopIndex - startIndex);//结束光标
+            range.select();//不兼容苹果
+          } else {//firefox/chrome
+            textbox.setSelectionRange(startIndex, stopIndex);
+            textbox.focus();
+          }
+        }
+       };
+    </script>
   
   
 <script language="javascript">
